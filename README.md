@@ -1,32 +1,25 @@
+
 # E-Commerce
-E-Commerce backend 
 
+E-Commerce backend (microservices + event-driven)
 
-           ┌─────────────┐
-           │ auth-service│
-           └─────┬───────┘
-                 │ JWT (userId)
-                 ▼
-           ┌─────────────┐
-           │ order-service│
-           └─────┬───────┘
-      OrderCreated│
-        ┌─────────┼─────────┐
-        ▼         ▼         │
-┌────────────┐ ┌──────────────┐
-│catalog-svc │ │ payment-svc  │
-│(reserve stk)││(create pay)  │
-└────────────┘ └──────┬───────┘
-                       │ PaymentSucceeded
-                       ├───────────────┐
-                       ▼               ▼
-              ┌─────────────┐  ┌──────────────┐
-              │ order-service│  │ shipping-svc │
-              │ (PAID)       │  │ (create ship)│
-              └─────────────┘  └──────┬───────┘
-                                       │ OrderShipped
-                                       ▼
-                                ┌─────────────┐
-                                │ order-service│
-                                │ (SHIPPED)    │
-                                └─────────────┘
+## Service Interaction Flow
+
+```mermaid
+flowchart TD
+    Auth[auth-service] -->|JWT (userId)| Order[order-service]
+
+    Order -->|OrderCreated| Catalog[catalog-service]
+    Catalog -->|Reserve Stock| Catalog
+
+    Order -->|OrderCreated| Payment[payment-service]
+    Payment -->|Create Payment| Payment
+
+    Payment -->|PaymentSucceeded| Order
+    Payment -->|PaymentSucceeded| Shipping[shipping-service]
+
+    Shipping -->|Create Shipment| Shipping
+    Shipping -->|OrderShipped| Order
+
+    Order -->|Status: SHIPPED| Order
+
