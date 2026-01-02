@@ -4,8 +4,6 @@
 E-Commerce backend (microservices + event-driven)
 
 ## Service Interaction Flow
-
-```mermaid
 flowchart TD
     Auth[auth-service] -->|JWT (userId)| Order[order-service]
 
