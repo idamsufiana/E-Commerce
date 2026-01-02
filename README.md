@@ -5,6 +5,8 @@ E-Commerce backend (microservices + event-driven)
 
 ## Service Interaction Flow
 flowchart TD
+
+
     Auth[auth-service] -->|JWT (userId)| Order[order-service]
 
     Order -->|OrderCreated| Catalog[catalog-service]
