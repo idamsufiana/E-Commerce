@@ -2,31 +2,32 @@
 E-Commerce backend 
 
 
-           ┌─────────────┐
-           │ auth-service│
-           └─────┬───────┘
-                 │ JWT (userId)
-                 ▼
-           ┌─────────────┐
-           │ order-service│
-           └─────┬───────┘
-      OrderCreated│
-        ┌─────────┼─────────┐
-        ▼         ▼         │
-┌────────────┐ ┌──────────────┐
-│catalog-svc │ │ payment-svc  │
-│(reserve stk)││(create pay)  │
-└────────────┘ └──────┬───────┘
-                       │ PaymentSucceeded
-                       ├───────────────┐
-                       ▼               ▼
-              ┌─────────────┐  ┌──────────────┐
-              │ order-service│  │ shipping-svc │
-              │ (PAID)       │  │ (create ship)│
-              └─────────────┘  └──────┬───────┘
-                                       │ OrderShipped
-                                       ▼
-                                ┌─────────────┐
-                                │ order-service│
-                                │ (SHIPPED)    │
-                                └─────────────┘
+┌──────────────┐
+│ auth-service │
+└───────┬──────┘
+        │ JWT (userId)
+        ▼
+┌──────────────┐
+│ order-service│
+└───────┬──────┘
+        │ OrderCreated
+        ├──────────────► catalog-service
+        │                 (reserve stock)
+        │
+        └──────────────► payment-service
+                          (create payment)
+                               │
+                               ▼
+                       PaymentSucceeded
+                               │
+        ┌──────────────────────┴──────────────────────┐
+        ▼                                             ▼
+order-service                                  shipping-service
+(mark PAID)                                   (create shipment)
+        │                                             │
+        └────────────── OrderShipped ◄────────────────┘
+                               │
+                               ▼
+                         order-service
+                         (mark SHIPPED)
+
