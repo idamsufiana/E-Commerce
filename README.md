@@ -6,20 +6,6 @@ E-Commerce backend (microservices + event-driven)
 ## Service Interaction Flow
 flowchart TD
 
+<img width="563" height="678" alt="image" src="https://github.com/user-attachments/assets/9ad05825-e105-4fee-a6bf-7e72b2f8f966" />
 
-    Auth[auth-service] -->|JWT (userId)| Order[order-service]
-
-    Order -->|OrderCreated| Catalog[catalog-service]
-    Catalog -->|Reserve Stock| Catalog
-
-    Order -->|OrderCreated| Payment[payment-service]
-    Payment -->|Create Payment| Payment
-
-    Payment -->|PaymentSucceeded| Order
-    Payment -->|PaymentSucceeded| Shipping[shipping-service]
-
-    Shipping -->|Create Shipment| Shipping
-    Shipping -->|OrderShipped| Order
-
-    Order -->|Status: SHIPPED| Order
 
