@@ -4,8 +4,10 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "products")
@@ -26,5 +28,13 @@ public class Product {
 
     private BigDecimal price;
 
-    private boolean active;
+    @Enumerated(EnumType.STRING)
+    private ProductStatus status;
+
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category category;
+
+    @CreationTimestamp
+    private LocalDateTime createdAt;
 }

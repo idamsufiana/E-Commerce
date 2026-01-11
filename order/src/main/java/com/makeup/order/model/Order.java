@@ -9,6 +9,7 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Table(name = "orders")
@@ -34,4 +35,41 @@ public class Order {
 
     @CreationTimestamp
     private LocalDateTime createdAt;
+
+    public static Order create(Long userId, BigDecimal total) {
+        Order order = new Order();
+        order.orderNo = "ORD-" + UUID.randomUUID();
+        order.userId = userId;
+        order.grandTotal = total;
+        order.status = OrderStatus.CREATED;
+        return order;
+    }
+
+
+    public void markPaid() {
+        if (status != OrderStatus.CREATED) {
+            throw new IllegalStateException(
+                    "Cannot mark PAID from status " + status
+            );
+        }
+        this.status = OrderStatus.PAID;
+    }
+
+    public void markShipped() {
+        if (status != OrderStatus.PAID) {
+            throw new IllegalStateException(
+                    "Cannot mark SHIPPED from status " + status
+            );
+        }
+        this.status = OrderStatus.SHIPPED;
+    }
+
+    public void cancel(String reason) {
+        if (status == OrderStatus.SHIPPED) {
+            throw new IllegalStateException("Cannot cancel shipped order");
+        }
+        if (status == OrderStatus.CANCELED) return;
+        this.status = OrderStatus.CANCELED;
+    }
+
 }

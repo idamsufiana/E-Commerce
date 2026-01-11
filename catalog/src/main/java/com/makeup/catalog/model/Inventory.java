@@ -16,6 +16,7 @@ public class Inventory {
     @JoinColumn(name = "product_id")
     private Product product;
 
-    private int stockOnHand;
-    private int reservedStock;
+    private Integer stockOnHand;
+
+    private Integer reservedStock;
 }
