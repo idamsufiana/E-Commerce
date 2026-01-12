@@ -4,6 +4,7 @@ import com.makeup.auth.model.User;
 import com.makeup.auth.model.Role;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -11,7 +12,9 @@ import java.util.Date;
 @Component
 public class JwtProvider {
 
-    private final String SECRET = "secret-key";
+
+    @Value("${secret-key}")
+    private String SECRET;
 
     public String generateToken(User user) {
         return Jwts.builder()
