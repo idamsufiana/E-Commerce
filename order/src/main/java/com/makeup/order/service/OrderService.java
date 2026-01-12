@@ -1,5 +1,6 @@
 package com.makeup.order.service;
 
+import com.makeup.order.dto.CheckoutRequest;
 import com.makeup.order.model.Order;
 import com.makeup.order.model.OrderCreatedEvent;
 import com.makeup.order.model.OrderStatus;
@@ -9,6 +10,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -23,7 +25,7 @@ public class OrderService {
     }
 
     @Transactional
-    public Order checkout(Long userId, BigDecimal total, List<OrderCreatedEvent.Item> items) {
+    public Order checkout(Long userId, BigDecimal total, CheckoutRequest items) {
 
         Order order = Order.builder()
                 .orderNo("ORD-" + System.currentTimeMillis())
@@ -34,7 +36,9 @@ public class OrderService {
 
         orderRepository.save(order);
 
-        publisher.publishOrderCreated(order, items);
+        OrderCreatedEvent orderCreatedEvent = new OrderCreatedEvent();
+        orderCreatedEvent.setItems(items.getItems());
+        publisher.publishOrderCreated(order, orderCreatedEvent.getItems());
         return order;
     }
 

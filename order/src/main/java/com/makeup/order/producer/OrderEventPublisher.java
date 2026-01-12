@@ -1,5 +1,6 @@
 package com.makeup.order.producer;
 
+import com.makeup.order.dto.Item;
 import com.makeup.order.model.DomainEvent;
 import com.makeup.order.model.Order;
 import com.makeup.order.model.OrderCanceledEvent;
@@ -20,7 +21,7 @@ public class OrderEventPublisher {
         this.kafkaTemplate = kafkaTemplate;
     }
 
-    public void publishOrderCreated(Order order, List<OrderCreatedEvent.Item> items) {
+    public void publishOrderCreated(Order order, List<Item> items) {
 
         DomainEvent<OrderCreatedEvent> event =
                 DomainEvent.<OrderCreatedEvent>builder()
