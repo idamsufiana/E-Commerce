@@ -1,5 +1,6 @@
 package com.makeup.catalog.service;
 
+import com.makeup.catalog.dto.Item;
 import com.makeup.catalog.dto.OrderCreatedEvent;
 import com.makeup.catalog.repository.InventoryRepository;
 import jakarta.transaction.Transactional;
@@ -17,9 +18,9 @@ public class InventoryService {
     }
 
     @Transactional
-    public void reserve(List<OrderCreatedEvent.Item> items) {
+    public void reserve(List<Item> items) {
 
-        for (OrderCreatedEvent.Item item : items) {
+        for (Item item : items) {
             int updated = inventoryRepository.reserveStock(
                     item.getProductId(),
                     item.getQty()
@@ -33,9 +34,25 @@ public class InventoryService {
         }
     }
 
+    public void consume(List<Item> items) {
+        for (Item item : items) {
+            int updated = inventoryRepository.consumeReservedStock(
+                    item.getProductId(),
+                    item.getQty()
+            );
+
+            if (updated == 0) {
+                throw new IllegalStateException(
+                        "Consume reserved stock failed for product "
+                                + item.getProductId()
+                );
+            }
+        }
+    }
+
     @Transactional
-    public void release(List<OrderCreatedEvent.Item> items) {
-        for (OrderCreatedEvent.Item item : items) {
+    public void release(List<Item> items) {
+        for (Item item : items) {
             inventoryRepository.releaseStock(
                     item.getProductId(),
                     item.getQty()
