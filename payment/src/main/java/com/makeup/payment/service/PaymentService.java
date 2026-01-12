@@ -36,4 +36,31 @@ public class PaymentService {
 
         publisher.publishPaymentSucceeded(orderId);
     }
+
+    @Transactional
+    public void markFailed(Long orderId, String reason) {
+        Payment payment = getPayment(orderId);
+
+        payment.setStatus(PaymentStatus.FAILED);
+        payment.setFailureReason(reason);
+        repo.save(payment);
+
+        publisher.publishPaymentFailed(orderId, reason);
+    }
+
+    @Transactional
+    public void markExpired(Long orderId) {
+        Payment payment = getPayment(orderId);
+
+        payment.setStatus(PaymentStatus.EXPIRED);
+        repo.save(payment);
+
+        publisher.publishPaymentExpired(orderId);
+    }
+
+    private Payment getPayment(Long orderId) {
+        return repo.findByOrderId(orderId)
+                .orElseThrow(() -> new IllegalStateException(
+                        "Payment not found for orderId=" + orderId));
+    }
 }

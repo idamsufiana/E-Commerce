@@ -22,8 +22,16 @@ public class PaymentController {
     public ResponseEntity<Void> callback(
             @RequestBody PaymentWebhookRequest payload
     ) {
-        if ("SUCCESS".equals(payload.getStatus())) {
-            paymentService.markSuccess(payload.getOrderId());
+        switch (payload.getStatus()) {
+            case "SUCCESS" -> paymentService.markSuccess(payload.getOrderId());
+            case "FAILED"  -> paymentService.markFailed(payload.getOrderId(), payload.getReason());
+            case "EXPIRED" -> paymentService.markExpired(payload.getOrderId());
+            case "PENDING" -> {
+                // optional: log only
+            }
+            default -> {
+                // unknown status → log
+            }
         }
         return ResponseEntity.ok().build();
     }

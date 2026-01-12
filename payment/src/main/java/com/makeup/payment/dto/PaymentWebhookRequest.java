@@ -6,4 +6,5 @@ import lombok.Data;
 public class PaymentWebhookRequest {
     private Long orderId;
     private String status;
+    private String reason;
 }

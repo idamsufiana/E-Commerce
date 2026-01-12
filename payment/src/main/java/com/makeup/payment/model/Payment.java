@@ -20,5 +20,7 @@ public class Payment {
     @Enumerated(EnumType.STRING)
     private PaymentStatus status;
 
+    private String failureReason;
+
     private String providerRef;
 }
